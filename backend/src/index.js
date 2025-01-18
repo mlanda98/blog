@@ -4,6 +4,7 @@ const passport = require("passport");
 const routes = require("./routes");
 
 dotenv.config();
+
 const app = express();
 app.use(express.json());
 app.use(passport.initialize());
