@@ -1,4 +1,4 @@
-import { getToken } from "../viewer-frontend/auth";
+import { getToken } from "./auth";
 
 const API_URL = "http://localhost:3000";
 
