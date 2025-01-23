@@ -1,4 +1,4 @@
-import { fetchPosts } from "../api";
+import { fetchPosts } from "./api";
 
 const loadPosts = async () => {
   try {
@@ -22,11 +22,11 @@ const loadPosts = async () => {
       addCommentBtn.addEventListener("click", async () => {
         const comment = postElement.querySelector("textarea").value;
         console.log(`Comment for post ${post.id}: ${comment}`);
-      })
+      });
     });
-  } catch (error){
+  } catch (error) {
     console.error("Error loading posts:", error);
   }
-}
+};
 
 loadPosts();

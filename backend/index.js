@@ -1,14 +1,16 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const passport = require("passport");
+const path = require("path");
 const authRoutes = require("./routes/authRoutes");
 require("./passport")(passport);
-const jwtStrategy = require("./passport");
 
 dotenv.config();
-jwtStrategy(passport);
 
 const app = express();
+
+app.use(express.static(path.join(__dirname, "public")));
+
 app.use(express.json());
 app.use(passport.initialize());
 

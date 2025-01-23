@@ -1,4 +1,4 @@
-import { getToken } from "./auth";
+import { getToken } from "../../frontend/auth";
 
 const API_URL = "http://localhost:3000";
 
