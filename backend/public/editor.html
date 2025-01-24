@@ -12,14 +12,15 @@
   <main>
     <section>
       <h2>Create New Post</h2>
-      <form>
-        <input type="text" placeholder="Tile" required>
-        <textarea placeholder="Content" required></textarea>
+      <form id="new-post-form">
+        <input type="text" id="title" placeholder="Title" required>
+        <textarea placeholder="Content" id="content" required></textarea>
         <button type="submit">Publish</button>
       </form>
     </section>
     <section>
       <h2>Edit Posts</h2>
+      <ul id="posts-list"></ul>
     </section>
   </main>
   <script type="module" src="editor.js"></script>

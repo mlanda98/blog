@@ -1,11 +1,13 @@
 import { fetchPosts, createPost, editPost, deletePost } from "./api.js";
 
+const newPostForm = document.getElementById("new-post-form");
+const postsList = document.getElementById("posts-list");
+
 const loadEditorPosts = async () => {
   try {
     const posts = await fetchPosts();
-    const editContainer = document.getElementById("edit-posts");
-    editContainer.innerHTML = "";
-
+    postsList.innerHTML = "";
+  
     posts.forEach((post) => {
       const postElement = document.createElement("div");
       postElement.className = "post";
@@ -16,12 +18,12 @@ const loadEditorPosts = async () => {
         <button class="delete-btn">Delete</button>
         <hr/>
       `;
-      editContainer.appendChild(postElement);
+      postsList.appendChild(postElement);
 
       const saveBtn = postElement.querySelector(".save-btn");
       saveBtn.addEventListener("click", async () => {
-        const updateContent = postElement.querySelector("textarea").value;
-        await editPost(post.id, updateContent);
+        const updatedContent = postElement.querySelector("textarea").value;
+        await editPost(post.id, updatedContent);
         alert("Post updated successfully!");
       });
 
@@ -37,8 +39,7 @@ const loadEditorPosts = async () => {
   }
 };
 
-const createPostForm = document.querySelector("#create-post form");
-createPostForm.addEventListener("submit", async (e) => {
+newPostForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const title = e.target.querySelector("input").value;
   const content = e.target.querySelector("textarea").value;
@@ -46,8 +47,8 @@ createPostForm.addEventListener("submit", async (e) => {
   try {
     await createPost(title, content);
     alert("Post created successfully!");
-    loadEditorPosts();
     e.target.reset();
+    loadEditorPosts();
   } catch (error) {
     console.error("Error creating post:", error);
   }

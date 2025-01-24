@@ -1,4 +1,4 @@
-import { getToken } from "../../frontend/auth";
+import { getToken } from "./auth";
 
 const API_URL = "http://localhost:3000";
 
@@ -21,7 +21,7 @@ export const createPost = async (title, content) => {
   return response.json();
 };
 
-export const editPost = async (title, content) => {
+export const editPost = async (id, content) => {
   const response = await fetch(`${API_URL}/posts/${id}`, {
     method: "PUT",
     headers: {
