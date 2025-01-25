@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (tokenPayload.isAdmin) {
           window.location.href = "admin-dashboard.html";
         } else {
-          window.location.href = "viewer-dashboard.html";
+          window.location.href = "viewers-dashboard.html";
         }
       } else {
         alert(data.error);
