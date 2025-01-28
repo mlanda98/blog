@@ -20,11 +20,10 @@ document.addEventListener("DOMContentLoaded", () => {
       if (response.ok) {
         localStorage.setItem("token", data.token);
 
-        const tokenPayload = JSON.parse(atob(data.token.split(".")[1]));
-        if (tokenPayload.isAdmin) {
-          window.location.href = "admin-dashboard.html";
+        if (data.isAdmin) {
+          window.location.href = "/auth/admin-dashboard";
         } else {
-          window.location.href = "viewers-dashboard.html";
+          window.location.href = "/auth/viewer-dashboard";
         }
       } else {
         alert(data.error);

@@ -9,7 +9,7 @@ const loadEditorPosts = async () => {
     postsList.innerHTML = "";
   
     posts.forEach((post) => {
-      const postElement = document.createElement("div");
+      const postElement = document.createElement("li");
       postElement.className = "post";
       postElement.innerHTML = `
         <h3>${post.title}</h3>
@@ -31,7 +31,7 @@ const loadEditorPosts = async () => {
       deleteBtn.addEventListener("click", async () => {
         await deletePost(post.id);
         alert("Post deleted successfully!");
-        postElement.remove();
+        loadEditorPosts();
       });
     });
   } catch (error) {
@@ -41,8 +41,8 @@ const loadEditorPosts = async () => {
 
 newPostForm.addEventListener("submit", async (e) => {
   e.preventDefault();
-  const title = e.target.querySelector("input").value;
-  const content = e.target.querySelector("textarea").value;
+  const title = e.target.querySelector("input").value.trim();
+  const content = e.target.querySelector("textarea").value.trim();
 
   try {
     await createPost(title, content);
@@ -51,6 +51,7 @@ newPostForm.addEventListener("submit", async (e) => {
     loadEditorPosts();
   } catch (error) {
     console.error("Error creating post:", error);
+    alert("Failed to create post")
   }
 });
 

@@ -1,28 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Blog Editor</title>
-</head>
-<body>
-  <header>
-    <h1>Blog Admin</h1>
-  </header>
-  <main>
-    <section>
-      <h2>Create New Post</h2>
-      <form id="new-post-form">
-        <input type="text" id="title" placeholder="Title" required>
-        <textarea placeholder="Content" id="content" required></textarea>
-        <button type="submit">Publish</button>
-      </form>
-    </section>
-    <section>
-      <h2>Edit Posts</h2>
-      <ul id="posts-list"></ul>
-    </section>
-  </main>
-  <script type="module" src="editor.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blog Editor</title>
+  </head>
+  <body>
+    <header>
+      <h1>Blog Admin</h1>
+    </header>
+    <main>
+      <section>
+        <h2>Create New Post</h2>
+        <form id="new-post-form">
+          <input type="text" id="title" placeholder="Title" required />
+          <textarea placeholder="Content" id="content" required></textarea>
+          <button type="submit">Publish</button>
+        </form>
+      </section>
+      <section>
+        <ul id="posts-list"></ul>
+      </section>
+    </main>
+    <script type="module" src="editor.js"></script>
+  </body>
 </html>

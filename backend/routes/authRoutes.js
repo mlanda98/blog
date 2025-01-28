@@ -2,6 +2,8 @@ const express = require("express");
 const passport = require("passport");
 const { register, login } = require("../controller/authController");
 const jwt = require("jsonwebtoken");
+const path = require("path");
+require("dotenv").config();
 const JWT_SECRET = process.env.JWT_SECRET;
 
 const router = express.Router();
@@ -29,11 +31,11 @@ const checkAdmin = (req, res, next) => {
 };
 
 router.get("/admin-dashboard", checkAdmin, (req, res) => {
-  res.send("Welcome to the Admin Dashboard!");
+  res.sendFile(path.join(__dirname, "../public/admin-dashboard.html"));
 });
 
-router.get("/admin-settings", checkAdmin, (req, res) => {
-  res.send("Admin Settings Page");
+router.get("/viewers-dashboard", checkAdmin, (req, res) => {
+  res.sendFile(path.join(__dirname, "../public/viewers-dashboard.html"));
 });
 
 module.exports = router;

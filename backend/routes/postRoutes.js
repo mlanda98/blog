@@ -2,6 +2,7 @@ const express = require("express");
 const prisma = require("../prisma");
 const router = express.Router();
 
+
 router.get("/", async (req, res) => {
   try {
     const posts = await prisma.post.findMany();
