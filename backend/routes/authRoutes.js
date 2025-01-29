@@ -38,5 +38,10 @@ router.get("/viewers-dashboard", checkAdmin, (req, res) => {
   res.sendFile(path.join(__dirname, "../public/viewers-dashboard.html"));
 });
 
+router.get("/login", (req, res) => {
+  res.sendFile(path.join(__dirname, "../public/login.html"));
+});
+
+
 module.exports = router;
 

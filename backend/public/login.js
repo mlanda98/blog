@@ -19,11 +19,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (response.ok) {
         localStorage.setItem("token", data.token);
+        console.log("Token saved to localStorage:", data.token);
 
         if (data.isAdmin) {
-          window.location.href = "/auth/admin-dashboard";
+          fetch("/auth/admin-dashboard", {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${data.token}`,
+            },
+          })
+            .then((response) => {
+              if (response.ok) {
+                window.location.href = "/auth/admin-dashboard";
+              } else {
+                alert("Failed to load admin dashboard");
+              }
+            })
+            .catch((error) => {
+              console.error("Error while fetching admin dashboard:", error);
+            });
         } else {
-          window.location.href = "/auth/viewer-dashboard";
+          window.location.href = "/auth/viewers-dashboard";
         }
       } else {
         alert(data.error);
