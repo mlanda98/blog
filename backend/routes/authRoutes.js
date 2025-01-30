@@ -1,46 +1,115 @@
 const express = require("express");
-const { register, login } = require("../controller/authController");
+const bcrypt = require("bcryptjs");
+const prisma = require("../prisma");
 const jwt = require("jsonwebtoken");
-const path = require("path");
+const cookieParser = require("cookie-parser");
 require("dotenv").config();
 const JWT_SECRET = process.env.JWT_SECRET;
 
 const router = express.Router();
+router.use(cookieParser());
 
-router.post("/register", register);
-router.post("/login", login);
+const authenticateUser = (req, res, next) => {
+  const token = req.cookies.token;
 
-const checkAdmin = (req, res, next) => {
-  const token = req.headers["authorization"]?.split(" ")[1];
-  console.log(token);
   if (!token) {
-    return res.status(401).json({ error: "No token provided" });
+    return res.redirect("/auth/login");
   }
-  jwt.verify(token, JWT_SECRET, (err, decoded) => {
-    if (err) {
-      return res.status(403).json({ error: "Invalid token" });
-    }
 
-    if (!decoded.isAdmin) {
-      return res.status(403).json({ error: "Access denied. Admins only" });
-    }
-    req.user = decoded;
+  try {
+    const decode = jwt.verify(token, JWT_SECRET);
+    req.user = decode;
     next();
-  });
+  } catch (error) {
+    res.clearCookie("token");
+    return res.redirect("/auth/login");
+  }
 };
+router.post("/register", async (req, res) => {
+  const { username, password} = req.body;
+  const isAdmin = req.body.isAdmin === "on";
+  console.log("Received data:", req.body);
 
-router.get("/admin-dashboard", checkAdmin, (req, res) => {
-  res.sendFile(path.join(__dirname, "../public/admin-dashboard.html"));
+  try {
+    const existingUser = await prisma.user.findUnique({
+      where: { username },
+    });
+
+    if (existingUser) {
+      return res.status(400).json({ error: "Username already taken" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await prisma.user.create({
+      data: {
+        username,
+        password: hashedPassword,
+        isAdmin,
+      },
+    });
+
+    res.redirect("/auth/login");
+  } catch (error) {
+    res.status(500).json({ error: "Something went wrong", details: error.message });
+  }
 });
 
-router.get("/viewers-dashboard", checkAdmin, (req, res) => {
-  res.sendFile(path.join(__dirname, "../public/viewers-dashboard.html"));
+router.post("/login", async (req, res) => {
+  const { username, password } = req.body;
+  console.log("Login data:", req.body);
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { username },
+    });
+
+    if (!user) {
+      return res.status(400).json({ error: "Invalid username or password" });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ error: "Invalid username or password" });
+    }
+
+    const token = jwt.sign(
+      { id: user.id, username: user.username, isAdmin: user.isAdmin },
+      JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    res.cookie("token", token, { httpOnly: true });
+
+    res.redirect(
+      user.isAdmin ? "/auth/admin-dashboard" : "/auth/viewers-dashboard"
+    );
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Something went wrong", details: error.message });
+  }
+});
+
+router.get("/logout", (req, res) => {
+  res.clearCookie("token");
+  res.redirect("/auth/login");
 });
 
 router.get("/login", (req, res) => {
-  res.sendFile(path.join(__dirname, "../public/login.html"));
+  res.render("login");
 });
 
+router.get("/register", (req, res) => {
+  res.render("register");
+});
+
+router.get("/admin-dashboard", authenticateUser, (req, res) => {
+  res.render("admin-dashboard", { username: req.user.username || "Admin" });
+});
+
+router.get("/viewers-dashboard", authenticateUser, (req, res) => {
+  res.render("viewers-dashboard", { username: req.user.username || "Viewer"});
+});
 
 module.exports = router;
-

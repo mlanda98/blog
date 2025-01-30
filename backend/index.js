@@ -8,6 +8,7 @@ require("./passport")(passport);
 const jwtStrategy = require("./passport");
 dotenv.config();
 const cors = require("cors");
+const exp = require("constants");
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use(express.json());
+app.use(express.urlencoded({extended: true}));
 app.use(cors());
 app.use(passport.initialize());
 

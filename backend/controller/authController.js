@@ -54,7 +54,7 @@ exports.login = async (req, res) => {
       { expiresIn: "1h" }
     );
 
-    const redirect = user.isAdmin ? "admin-dashboard.html" : "viewers-dashboard.html";
+    const redirect = user.isAdmin ? "admin-dashboard" : "viewers-dashboard";
     res.status(200).json({ message: "Login successful", token, redirect });
   } catch (error) {
     res.status(500).json({ error: "Something went wrong" });
