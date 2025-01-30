@@ -1,5 +1,4 @@
 const express = require("express");
-const passport = require("passport");
 const { register, login } = require("../controller/authController");
 const jwt = require("jsonwebtoken");
 const path = require("path");
