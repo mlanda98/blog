@@ -4,27 +4,11 @@ const prisma = require("../prisma");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
-const JWT_SECRET = process.env.JWT_SECRET;
+const authenticateUser = require("../controller/authUser");
 
 const router = express.Router();
 router.use(cookieParser());
 
-const authenticateUser = (req, res, next) => {
-  const token = req.cookies.token;
-
-  if (!token) {
-    return res.redirect("/auth/login");
-  }
-
-  try {
-    const decode = jwt.verify(token, JWT_SECRET);
-    req.user = decode;
-    next();
-  } catch (error) {
-    res.clearCookie("token");
-    return res.redirect("/auth/login");
-  }
-};
 router.post("/register", async (req, res) => {
   const { username, password} = req.body;
   const isAdmin = req.body.isAdmin === "on";
@@ -75,7 +59,7 @@ router.post("/login", async (req, res) => {
 
     const token = jwt.sign(
       { id: user.id, username: user.username, isAdmin: user.isAdmin },
-      JWT_SECRET,
+      process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
 

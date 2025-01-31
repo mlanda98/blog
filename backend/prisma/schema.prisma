@@ -30,7 +30,7 @@ model Post {
   authorId Int 
   author User @relation(fields: [authorId], references: [id])
   createdAt DateTime @default(now())
-  updateAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt
   comments Comment[]
 }
 
