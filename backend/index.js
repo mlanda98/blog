@@ -23,7 +23,9 @@ app.use(passport.initialize());
 
 app.use("/auth", authRoutes);
 app.use("/posts", postRoutes);
-
+app.get("/", (req, res) => {
+  res.render("index");
+})
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

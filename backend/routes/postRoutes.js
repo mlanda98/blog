@@ -1,14 +1,21 @@
 const express = require("express");
 const prisma = require("../prisma");
 const authenticateUser = require("../controller/authUser");
-const e = require("express");
 
 const router = express.Router();
 
-router.get("/", async (req, res) => {
+const authenticateAdmin = (req, res, next) => {
+  if (!req.user || !req.user.isAdmin){
+    return res.status(403).send("Access denied");
+  }
+  next();
+}
+
+router.get("/admin", authenticateUser, authenticateAdmin, async (req, res) => {
   try {
     const posts = await prisma.post.findMany({
       where: { published: true },
+      orderBy: {createdAt: "desc"},
       include: { author: { select: { username: true } } },
     });
 
@@ -42,6 +49,8 @@ router.get("/:id", async (req, res) => {
 });
 
 router.post("/create", authenticateUser, async (req, res) => {
+  const {title, content, published} = req.body;
+
   try {
     const newPost = await prisma.post.create({
       data: {
@@ -73,7 +82,7 @@ router.post("/edit/:id", authenticateUser, async (req, res) => {
 
     await prisma.post.update({
       where: { id: postId },
-      data: { title, content, published: published === "on" },
+      data: { title, content, published: published === "on", updatedAt: new Date(), },
     });
 
     res.redirect("/posts/${postId");
@@ -88,7 +97,9 @@ router.post("/delete/:id", authenticateUser, async (req, res) => {
   const postId = parseInt(req.params.id);
 
   try {
-    if (!req.user.isAdmin) {
+    const post = await prisma.post.findUnique({where: {id: postId}})
+    if (!post || (post.authorId !== req.user.id && !req.user.isAdmin
+    )) {
       return res.status(403).json({ error: "Unauthorized" });
     }
 

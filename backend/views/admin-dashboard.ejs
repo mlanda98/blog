@@ -9,5 +9,31 @@
   <h1>Admin Dashboard</h1>
   <p>Welcome to the admin dashboard</p>
   <p>Hello, <%= username %>!</p>
+
+  <h2>Create New Post</h2>
+  <form action="/admin/create" method="POST">
+    <input type="text" name="title" placeholder="tile" required>
+    <textarea name="content" placeholder="content" required></textarea>
+    <label>
+      <input type="checkbox" name="published">Publish
+    </label>
+    <button type="submit">Create Post</button>
+  </form>
+
+  <h2>All Posts</h2>
+  <ul>
+    <% posts.forEach(post => { 
+      %>
+      <li>
+        <h3><%=post.title %></h3>
+        <p><%= post.content %></p>
+        <p>Status: <%= post.published ? "Published" : "Draft" %></p>
+        <a href="/admin/edit/<%= post.id %>">Edit</a>
+        <form action="/admin/delete/<%= post.id %>">
+          <button type="submit">Delete</button>
+        </form>
+      </li>
+    <% }) %>
+  </ul>
 </body>
 </html>
