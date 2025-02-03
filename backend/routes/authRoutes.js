@@ -88,12 +88,26 @@ router.get("/register", (req, res) => {
   res.render("register");
 });
 
-router.get("/admin-dashboard", authenticateUser, (req, res) => {
-  res.render("admin-dashboard", { username: req.user.username || "Admin" });
+router.get("/admin-dashboard", authenticateUser, async (req, res) => {
+  try {
+    const posts = await prisma.post.findMany();
+  res.render("admin-dashboard", { username: req.user.username || "Admin",
+    posts
+   });
+  } catch (error){
+    console.error(error);
+    res.status(500).send("Error loading posts");
+  }
 });
 
 router.get("/viewers-dashboard", authenticateUser, (req, res) => {
   res.render("viewers-dashboard", { username: req.user.username || "Viewer"});
 });
 
+router.post("/admin/create", authenticateUser, async (req, res) => {
+  const {title, content} = req.body;
+  try {
+
+  }
+})
 module.exports = router;
