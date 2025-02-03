@@ -90,7 +90,9 @@ router.get("/register", (req, res) => {
 
 router.get("/admin-dashboard", authenticateUser, async (req, res) => {
   try {
-    const posts = await prisma.post.findMany();
+    const posts = await prisma.post.findMany({
+    orderBy: {createdAt: "desc"},
+  });
   res.render("admin-dashboard", { username: req.user.username || "Admin",
     posts
    });
@@ -104,10 +106,4 @@ router.get("/viewers-dashboard", authenticateUser, (req, res) => {
   res.render("viewers-dashboard", { username: req.user.username || "Viewer"});
 });
 
-router.post("/admin/create", authenticateUser, async (req, res) => {
-  const {title, content} = req.body;
-  try {
-
-  }
-})
 module.exports = router;

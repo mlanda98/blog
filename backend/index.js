@@ -9,6 +9,7 @@ const jwtStrategy = require("./passport");
 dotenv.config();
 const cors = require("cors");
 const exp = require("constants");
+const cookieParser = require("cookie-parser");
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+app.use(cookieParser());
 app.use(passport.initialize());
 
 app.use("/auth", authRoutes);

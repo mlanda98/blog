@@ -52,16 +52,17 @@ router.post("/create", authenticateUser, async (req, res) => {
   const {title, content, published} = req.body;
 
   try {
-    const newPost = await prisma.post.create({
+    await prisma.post.create({
       data: {
         title,
         content,
         published: published === "on",
+        createdAt: new Date(),
         authorId: req.user.id,
       },
     });
 
-    res.redirect("/posts");
+    res.redirect("/auth/admin-dashboard");
   } catch (error) {
     res
       .status(500)

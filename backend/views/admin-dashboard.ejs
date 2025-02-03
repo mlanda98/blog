@@ -11,12 +11,17 @@
   <p>Hello, <%= username %>!</p>
 
   <h2>Create New Post</h2>
-  <form action="/admin/create" method="POST">
-    <input type="text" name="title" placeholder="tile" required>
-    <textarea name="content" placeholder="content" required></textarea>
-    <label>
+  <form action="/posts/create" method="POST">
+    <label for="title">Title:</label>
+    <input type="text" name="title" id="title" placeholder="title" required><br>
+
+    <label for="content">Content:</label>
+    <textarea name="content" id="content" placeholder="content" required></textarea><br>
+
+    <label for="publish">
       <input type="checkbox" name="published">Publish
-    </label>
+    </label><br>
+
     <button type="submit">Create Post</button>
   </form>
 
@@ -28,6 +33,7 @@
         <h3><%=post.title %></h3>
         <p><%= post.content %></p>
         <p>Status: <%= post.published ? "Published" : "Draft" %></p>
+        <p>Posted on: <%= new Date(post.createdAt).toLocaleDateString() %></p>
         <a href="/admin/edit/<%= post.id %>">Edit</a>
         <form action="/admin/delete/<%= post.id %>">
           <button type="submit">Delete</button>
