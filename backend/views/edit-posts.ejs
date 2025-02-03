@@ -7,7 +7,7 @@
 </head>
 <body>
   <h1>Edit Post</h1>
-  <form accept="/admin/update/<%= post.id %>" method="POST">
+  <form accept="/admin/edit/<%= post.id %>" method="POST">
     <input type="text" name="title" value="<%= post.title %>" required>
     <textarea name="content" required><%= post.content %></textarea>
     <label>

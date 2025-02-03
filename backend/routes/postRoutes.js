@@ -5,17 +5,17 @@ const authenticateUser = require("../controller/authUser");
 const router = express.Router();
 
 const authenticateAdmin = (req, res, next) => {
-  if (!req.user || !req.user.isAdmin){
+  if (!req.user || !req.user.isAdmin) {
     return res.status(403).send("Access denied");
   }
   next();
-}
+};
 
 router.get("/admin", authenticateUser, authenticateAdmin, async (req, res) => {
   try {
     const posts = await prisma.post.findMany({
       where: { published: true },
-      orderBy: {createdAt: "desc"},
+      orderBy: { createdAt: "desc" },
       include: { author: { select: { username: true } } },
     });
 
@@ -49,7 +49,7 @@ router.get("/:id", async (req, res) => {
 });
 
 router.post("/create", authenticateUser, async (req, res) => {
-  const {title, content, published} = req.body;
+  const { title, content, published } = req.body;
 
   try {
     await prisma.post.create({
@@ -70,6 +70,25 @@ router.post("/create", authenticateUser, async (req, res) => {
   }
 });
 
+router.get("/edit/:id", authenticateUser, async (req, res) => {
+  const postId = parseInt(req.params.id);
+
+  try {
+    const post = await prisma.post.findUnique({
+      where: { id: postId },
+    });
+
+    if (!post || (post.authorId !== req.user.id && !req.user.isAdmin)) {
+      return res.status(403).json({ error: "Unauthorized" });
+    }
+    res.render("edit-posts", { post });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Error fetching post", details: error.message });
+  }
+});
+
 router.post("/edit/:id", authenticateUser, async (req, res) => {
   const postId = parseInt(req.params.id);
   const { title, content, published } = req.body;
@@ -77,16 +96,20 @@ router.post("/edit/:id", authenticateUser, async (req, res) => {
   try {
     const post = await prisma.post.findUnique({ where: { id: postId } });
 
-    if (!post || post.authorId !== req.user.id) {
+    if (!post || (post.authorId !== req.user.id && !req.user.isAdmin)) {
       return res.status(403).json({ error: "Unauthorized" });
     }
 
     await prisma.post.update({
       where: { id: postId },
-      data: { title, content, published: published === "on", updatedAt: new Date(), },
+      data: {
+        title,
+        content,
+        published: published === "on",
+        updatedAt: new Date(),
+      },
     });
-
-    res.redirect("/posts/${postId");
+    res.redirect("/auth/admin-dashboard");
   } catch (error) {
     res
       .status(500)
@@ -98,14 +121,13 @@ router.post("/delete/:id", authenticateUser, async (req, res) => {
   const postId = parseInt(req.params.id);
 
   try {
-    const post = await prisma.post.findUnique({where: {id: postId}})
-    if (!post || (post.authorId !== req.user.id && !req.user.isAdmin
-    )) {
+    const post = await prisma.post.findUnique({ where: { id: postId } });
+    if (!post || (post.authorId !== req.user.id && !req.user.isAdmin)) {
       return res.status(403).json({ error: "Unauthorized" });
     }
 
     await prisma.post.delete({ where: { id: postId } });
-    res.redirect("/posts");
+    res.redirect("/auth/admin-dashboard");
   } catch (error) {
     res
       .status(500)
