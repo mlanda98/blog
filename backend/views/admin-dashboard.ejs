@@ -35,7 +35,7 @@
         <p>Status: <%= post.published ? "Published" : "Draft" %></p>
         <p>Posted on: <%= new Date(post.createdAt).toLocaleDateString() %></p>
         <a href="/posts/edit/<%= post.id %>">Edit</a>
-        <form action="/posts/delete/<%= post.id %>">
+        <form action="/posts/delete/<%= post.id %>" method="post">
           <button type="submit">Delete</button>
         </form>
       </li>
