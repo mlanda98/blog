@@ -102,8 +102,19 @@ router.get("/admin-dashboard", authenticateUser, async (req, res) => {
   }
 });
 
-router.get("/viewers-dashboard", authenticateUser, (req, res) => {
-  res.render("viewers-dashboard", { username: req.user.username || "Viewer"});
+router.get("/viewers-dashboard", authenticateUser, async (req, res) => {
+  try{
+    const posts = await prisma.post.findMany({
+      orderBy: {createdAt: "desc"},
+    })
+      res.render("viewers-dashboard", {
+        username: req.user.username,
+        posts
+      })
+    } catch (error){
+      console.error(error);
+      res.status(500).send("Error loading posts");
+    }
 });
 
 module.exports = router;
