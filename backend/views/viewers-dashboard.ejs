@@ -17,18 +17,25 @@
       <li>
         <h3><%= post.title %></h3>
         <p><%= post.content %></p>
-      </li> 
+      </li>
 
       <h3>Comments:</h3>
       <ul id="comments-list-<%= post.id %>">
         <% post.comments.forEach(comment => { %>
         <li>
           <strong><%= comment.authorName %>:</strong> <%= comment.content %>
+          <form
+            action="/comments/<%= comment.id %>?_method=DELETE"
+            method="post"
+            style="display: inline"
+          >
+            <button type="submit">Delete</button>
+          </form>
         </li>
         <% }) %>
       </ul>
       <form action="/comments" method="post">
-      <input type="hidden" name="postId" value="<%= post.id %>">
+        <input type="hidden" name="postId" value="<%= post.id %>" />
         <textarea
           name="content"
           placeholder="Write a comment..."

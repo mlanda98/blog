@@ -82,7 +82,13 @@ router.delete("/:id", authenticateUser, async (req, res) => {
     }
 
     await prisma.comment.delete({ where: { id: parseInt(id) } });
+
+    if (req.user.isAdmin){
     res.redirect("/auth/admin-dashboard")
+    } else {
+      res.redirect("/auth/viewers-dashboard");
+    }
+    
   } catch (error) {
     console.error(error);
     res.status(500).send("Error deleting comment");
