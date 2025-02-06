@@ -7,7 +7,7 @@ const authenticateUser = (req, res, next) => {
   const token = req.cookies.token;
 
   if (!token) {
-    return res.redirect("/auth/login");
+    return res.status(401).json({error: "Unauthorized - Please log in"})
   }
 
   try {
@@ -16,7 +16,7 @@ const authenticateUser = (req, res, next) => {
     next();
   } catch (error) {
     res.clearCookie("token");
-    return res.redirect("/auth/login");
+    return res.status(401).json({error: "Invalid token, please log in again"});
   }
 };
 

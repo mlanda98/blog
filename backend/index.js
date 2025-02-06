@@ -4,13 +4,14 @@ const passport = require("passport");
 const path = require("path");
 const authRoutes = require("./routes/authRoutes");
 const postRoutes = require("./routes/postRoutes");
+const commentRoutes = require("./routes/commentRoutes");
 require("./passport")(passport);
 const jwtStrategy = require("./passport");
 dotenv.config();
 const cors = require("cors");
 const exp = require("constants");
 const cookieParser = require("cookie-parser");
-
+const methodOverride = require("method-override");
 const app = express();
 
 app.set("view engine", "ejs");
@@ -22,9 +23,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(cookieParser());
 app.use(passport.initialize());
+app.use(methodOverride("_method"));
 
 app.use("/auth", authRoutes);
 app.use("/posts", postRoutes);
+app.use("/comments", commentRoutes);
+
 app.get("/", (req, res) => {
   res.render("index");
 });

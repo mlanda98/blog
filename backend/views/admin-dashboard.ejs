@@ -1,34 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard</title>
-</head>
-<body>
-  <h1>Admin Dashboard</h1>
-  <p>Welcome to the admin dashboard</p>
-  <p>Hello, <%= username %>!</p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard</title>
+  </head>
+  <body>
+    <h1>Admin Dashboard</h1>
+    <p>Welcome to the admin dashboard</p>
+    <p>Hello, <%= username %>!</p>
 
-  <h2>Create New Post</h2>
-  <form action="/posts/create" method="POST">
-    <label for="title">Title:</label>
-    <input type="text" name="title" id="title" placeholder="title" required><br>
+    <h2>Create New Post</h2>
+    <form action="/posts/create" method="POST">
+      <label for="title">Title:</label>
+      <input
+        type="text"
+        name="title"
+        id="title"
+        placeholder="title"
+        required
+      /><br />
 
-    <label for="content">Content:</label>
-    <textarea name="content" id="content" placeholder="content" required></textarea><br>
+      <label for="content">Content:</label>
+      <textarea
+        name="content"
+        id="content"
+        placeholder="content"
+        required
+      ></textarea
+      ><br />
 
-    <label for="publish">
-      <input type="checkbox" name="published">Publish
-    </label><br>
+      <label for="publish">
+        <input type="checkbox" name="published" />Publish </label
+      ><br />
 
-    <button type="submit">Create Post</button>
-  </form>
+      <button type="submit">Create Post</button>
+    </form>
 
-  <h2>All Posts</h2>
-  <ul>
-    <% posts.forEach(post => { 
-      %>
+    <h2>All Posts</h2>
+    <ul>
+      <% posts.forEach(post => { %>
       <li>
         <h3><%=post.title %></h3>
         <p><%= post.content %></p>
@@ -38,8 +49,20 @@
         <form action="/posts/delete/<%= post.id %>" method="post">
           <button type="submit">Delete</button>
         </form>
+        <h3>Comments:</h3>
+        <ul>
+          <% post.comments.forEach(comment => { %>
+          <li>
+            <strong><%= comment.authorName %>:</strong> <%= comment.content %>
+            
+            <form action="/comments/<%= comment.id %>?_method=DELETE" method="post" style="display: inline;">
+              <button type="submit">Delete</button>
+            </form>
+          </li>
+          <% }) %>
+        </ul>
       </li>
-    <% }) %>
-  </ul>
-</body>
+      <% }) %>
+    </ul>
+  </body>
 </html>

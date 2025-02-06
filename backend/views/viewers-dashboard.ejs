@@ -1,24 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard</title>
-</head>
-<body>
-  <h1>Dashboard</h1>
-  <p>Welcome to the viewers dashboard</p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+  </head>
+  <body>
+    <h1>Dashboard</h1>
+    <p>Welcome to the viewers dashboard</p>
 
-  <p>Hello, <%= username %>!</p>
+    <p>Hello, <%= username %>!</p>
 
-  <h2>Published Posts</h2>
-  <ul>
-    <% posts.forEach(post => { %>
+    <h2>Published Posts</h2>
+    <ul>
+      <% posts.forEach(post => { %>
       <li>
-        <h3><%=  post.title %></h3>
+        <h3><%= post.title %></h3>
         <p><%= post.content %></p>
-      </li> <%
-    }); %>
-  </ul>
-</body>
+      </li> 
+
+      <h3>Comments:</h3>
+      <ul id="comments-list-<%= post.id %>">
+        <% post.comments.forEach(comment => { %>
+        <li>
+          <strong><%= comment.authorName %>:</strong> <%= comment.content %>
+        </li>
+        <% }) %>
+      </ul>
+      <form action="/comments" method="post">
+      <input type="hidden" name="postId" value="<%= post.id %>">
+        <textarea
+          name="content"
+          placeholder="Write a comment..."
+          required
+        ></textarea>
+        <button type="submit">Post Comment</button>
+      </form>
+      <% }); %>
+    </ul>
+  </body>
 </html>
