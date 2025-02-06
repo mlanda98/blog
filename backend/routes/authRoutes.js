@@ -93,7 +93,6 @@ router.get("/register", (req, res) => {
 router.get("/admin-dashboard", authenticateUser, async (req, res) => {
   try {
     const posts = await prisma.post.findMany({
-      where: {published: true},
       include: {comments: true},
       orderBy: { createdAt: "desc" },
     });

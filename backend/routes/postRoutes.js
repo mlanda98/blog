@@ -5,6 +5,7 @@ const authenticateUser = require("../controller/authUser");
 const router = express.Router();
 
 const authenticateAdmin = (req, res, next) => {
+  console.log("admin route accessed");
   if (!req.user || !req.user.isAdmin) {
     return res.status(403).send("Access denied");
   }
@@ -14,11 +15,17 @@ const authenticateAdmin = (req, res, next) => {
 router.get("/admin", authenticateUser, authenticateAdmin, async (req, res) => {
   try {
     const posts = await prisma.post.findMany({
-      where: { published: true },
+      where: {},
       orderBy: { createdAt: "desc" },
       include: { author: { select: { username: true } } },
     });
 
+    console.log("all posts:", posts);
+    console.log(
+      "published post",
+      posts.filter((post) => post.published)
+    );
+    
     res.render("posts", { posts });
   } catch (error) {
     res
