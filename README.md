@@ -7,12 +7,6 @@ This project is a full-stack blog application featuring:
 
 ---
 
-🚀 Demo
-
- ![App Demo](dem.gif)
-
----
-
 📌 Features
 Viewer (Public)
 - View published posts
